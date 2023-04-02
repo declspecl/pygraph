@@ -72,16 +72,67 @@ class Graph(Square):
     def draw(self) -> str:
         # should be a 2d array of characters
         grid: str = "\n".join(["".join(["-" for row in range(self.sideLength)]) for col in range(self.sideLength)])
+        gridCopy = []
+        storage = []
+        newGrid = ""
+        i = 0 
+        for point in grid:
+            i += 1
+            if point == '\n':
+                i -= 1
+                continue
+            storage.append(point)
+            
+            if (i + 1) % self.sideLength == 0:
+                gridCopy.append(storage)
+                storage = []
+        
+        gridCopy[0] += '-'
 
         for object in self.objects:
             if isinstance(object, Point2D):
                 # remember, 2d arrays do not exactly work like a coordinate point. the first index is row, not col
-
+                
                 # needs to be a 2d array in order to index it. however, its a string rn, and indexing the string wil suck cuz u need to take
                 # into account the newlines, so prob cant do len(grid) * object.y math etc.
-                grid[object.y - 1][object.x - 1] = "*"
-            else: # square
+                
+              #bro im just gonna hardcode this because my brain wasnt working
+
+                if object.x == 0 and object.y == 0:
+                    gridCopy[self.sideLength - 1][0] = '*'
+
+                elif object.x == self.sideLength and object.y == 0:
+                    gridCopy[self.sideLength - 1][self.sideLength - 1] = "*"
+
+                elif object.x == 0 and object.y == self.sideLength:
+                    gridCopy[0][0] = '*'
+                    
+                elif object.x == self.sideLength and object.y == self.sideLength:
+                    gridCopy[0][self.sideLength - 1] = '*'
+
+                elif object.x == 0:
+                    gridCopy[self.sideLength - object.y - 1][0] = '*'
+                
+                elif object.y == 0:
+                    gridCopy[self.sideLength - object.y - 1][object.x] = '*'
+
+                else:
+                    gridCopy[self.sideLength - object.y - 1][object.x - 1] = "*"
+
+            else:
                 pass
+
+        # need to be able to represent it as string
+        #print(grid)
+        for i in gridCopy:
+            for j in i:
+                
+                newGrid += j
+       
+            newGrid += '\n'
+        
+        return newGrid
+
 
         # need to be able to represent it as string
         return grid
